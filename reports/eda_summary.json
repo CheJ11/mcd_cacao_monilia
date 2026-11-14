@@ -1,0 +1,195 @@
+{
+  "dataset_root": "D:\\mcd\\mcd_cacao_monilia\\data\\raw\\CocoaMoniliaDataSet",
+  "inventario": {
+    "COCO_annotations": {
+      ".json": 4
+    },
+    "YOLO_annotations": {
+      ".txt": 1950
+    },
+    "cocoapods_images": {
+      ".jpg": 1950
+    },
+    "mask_segmentation": {
+      ".png": 3900,
+      ".txt": 4
+    }
+  },
+  "archivos_no_imagen_en_cocoapods_images": [],
+  "conteo_por_clase": {
+    "h0": 646,
+    "m1": 436,
+    "m2": 401,
+    "m3": 467
+  },
+  "total_imagenes": 1950,
+  "desbalance_max_min": 1.611,
+  "resoluciones_mas_frecuentes": {
+    "3072x3072": 929,
+    "3472x3472": 347,
+    "2448x2448": 202,
+    "3056x3056": 158,
+    "3000x3000": 85
+  },
+  "orientacion_exif": {
+    "6": 1630,
+    "1": 302,
+    "3": 11,
+    "8": 7
+  },
+  "tamano_archivo_mb": {
+    "count": 1950.0,
+    "mean": 3.18,
+    "std": 0.93,
+    "min": 1.47,
+    "25%": 2.7,
+    "50%": 3.03,
+    "75%": 3.46,
+    "max": 11.17
+  },
+  "nombres_de_archivo_repetidos": 37,
+  "coco": {
+    "por_json": {
+      "h0": {
+        "imagenes": 649,
+        "anotaciones": 724,
+        "categorias_definidas": [
+          "h0",
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ]
+      },
+      "m1": {
+        "imagenes": 436,
+        "anotaciones": 479,
+        "categorias_definidas": [
+          "h0",
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ]
+      },
+      "m2": {
+        "imagenes": 401,
+        "anotaciones": 442,
+        "categorias_definidas": [
+          "h0",
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ]
+      },
+      "m3": {
+        "imagenes": 467,
+        "anotaciones": 517,
+        "categorias_definidas": [
+          "h0",
+          "m1",
+          "m2",
+          "m3",
+          "m4"
+        ]
+      }
+    },
+    "global": {
+      "imagenes_unicas": 1913,
+      "mazorcas_unicas": 2160,
+      "mazorcas_por_categoria": {
+        "h0": 754,
+        "m1": 442,
+        "m2": 416,
+        "m3": 509,
+        "m4": 39
+      },
+      "imagenes_por_n_mazorcas": {
+        "1": 1716,
+        "2": 158,
+        "3": 29,
+        "4": 9,
+        "5": 1
+      },
+      "imagenes_con_categorias_mezcladas": 99,
+      "area_bbox_relativa_mediana": 0.19418048858642578
+    }
+  },
+  "calidad_etiquetas": {
+    "imagenes_coco_sin_archivo": [],
+    "imagenes_sin_anotacion_coco": 0,
+    "imagenes_en_varias_carpetas": 74,
+    "imagenes_con_etiqueta_coco_distinta_a_carpeta": 271,
+    "imagenes_limpias_1_mazorca": 1591,
+    "imagenes_limpias_1_mazorca_por_clase": {
+      "h0": 529,
+      "m1": 338,
+      "m2": 327,
+      "m3": 397
+    },
+    "imagenes_limpias_varias_mazorcas_misma_clase": 75
+  },
+  "nombres_repetidos": {
+    "nombres": 37,
+    "archivos_identicos": 36,
+    "combinaciones_de_carpetas": {
+      "h0|m3": 14,
+      "m1|m2": 13,
+      "m2|m3": 5,
+      "h0|m1": 3,
+      "h0|m2": 2
+    }
+  },
+  "particiones_oficiales": {
+    "train": {
+      "lineas": 1560,
+      "emparejadas": 1560,
+      "no_emparejadas": 0,
+      "ejemplos_no_emparejados": [],
+      "ejemplo_de_linea": "CocoaMoniliaDataSet/cocoapods_images/m3/IMG_20241010_134219215.jpg"
+    },
+    "val": {
+      "lineas": 195,
+      "emparejadas": 195,
+      "no_emparejadas": 0,
+      "ejemplos_no_emparejados": [],
+      "ejemplo_de_linea": "CocoaMoniliaDataSet/cocoapods_images/m1/IMG_20241010_130146042_HDR.jpg"
+    },
+    "test": {
+      "lineas": 195,
+      "emparejadas": 195,
+      "no_emparejadas": 0,
+      "ejemplos_no_emparejados": [],
+      "ejemplo_de_linea": "CocoaMoniliaDataSet/cocoapods_images/m1/IMG_20240227_105513146.jpg"
+    }
+  },
+  "clases_por_particion_oficial": {
+    "test": {
+      "h0": 65,
+      "m1": 43,
+      "m2": 38,
+      "m3": 49
+    },
+    "train": {
+      "h0": 513,
+      "m1": 348,
+      "m2": 321,
+      "m3": 378
+    },
+    "val": {
+      "h0": 68,
+      "m1": 45,
+      "m2": 42,
+      "m3": 40
+    }
+  },
+  "casi_duplicados": {
+    "umbral_hamming": 6,
+    "pares_archivos_distintos": 43,
+    "pares_misma_clase": 41,
+    "pares_entre_clases": 2,
+    "imagenes_involucradas": 77,
+    "pares_entre_particiones_oficiales": 6
+  }
+}
