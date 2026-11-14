@@ -28,19 +28,9 @@ from PIL import Image, ImageOps
 from tqdm import tqdm
 
 from cacao import config
+from cacao.data import find_dataset_root
 
 EXIF_ORIENTATION = 274  # etiqueta EXIF estándar de orientación
-
-
-# ----------------------------------------------------------------- localización
-def find_dataset_root(raw_dir: Path) -> Path:
-    roots = sorted(p.parent for p in raw_dir.rglob("cocoapods_images") if p.is_dir())
-    if not roots:
-        raise FileNotFoundError("No se encontró 'cocoapods_images/'. Ejecuten antes "
-                                "python -m scripts.download_data")
-    if len(roots) > 1:
-        print(f"AVISO: varias copias del dataset; se usa {roots[0]}")
-    return roots[0]
 
 
 # ------------------------------------------------------------------ 1. inventario
