@@ -7,6 +7,5 @@ data/processed/
 runs/
 .env
 .streamlit/secrets.toml
-models/*
-!models/.gitkeep
+models/_tmp/
 .vscode/

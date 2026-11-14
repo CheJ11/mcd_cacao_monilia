@@ -1,0 +1,27 @@
+{
+  "modelo": "vgg16",
+  "img_size": 224,
+  "batch": 32,
+  "lr_cabeza": 0.001,
+  "lr_fine_tuning": 1e-05,
+  "capas_descongeladas": 4,
+  "parametros_entrenables_fine_tuning": 7079424,
+  "parametros_totales": 14716740,
+  "epocas_fase1": 20,
+  "epocas_fase2": 8,
+  "segundos_fase1": 935.9,
+  "segundos_fase2": 424.6,
+  "fine_tuning_mejoro_val_loss": true,
+  "pesos_por_clase": {
+    "h0": 0.726,
+    "m1": 1.214,
+    "m2": 1.255,
+    "m3": 0.998
+  },
+  "val_loss_min": 0.4096,
+  "val_accuracy": 0.8403,
+  "val_f1_macro": 0.838,
+  "tamano_modelo_mb": 59.0,
+  "limit": null,
+  "weights": "imagenet"
+}
