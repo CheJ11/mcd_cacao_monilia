@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
 SPLITS_DIR = DATA_DIR / "splits"
+PROCESSED_DIR = DATA_DIR / "processed"
 MODELS_DIR = ROOT / "models"
 REPORTS_DIR = ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
@@ -32,8 +33,11 @@ CLASS_NAMES = {
     "m3": "Monilia ciclo 4 (esporulación)",
 }
 EXPECTED_TOTAL_IMAGES = 1953  # según el artículo; se verifica tras la descarga
+OFFICIAL_SPLIT_FILES = {"train": "train.txt", "val": "val.txt", "test": "test.txt"}
 
 # --- Reproducibilidad y modelado ---
 SEED = 42
 IMG_SIZE = (224, 224)
+PREPROCESS_SIZE = 512   # caché en data/processed/512/: permite entrenar a 224 o 384
+JPEG_QUALITY = 95
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp"}
