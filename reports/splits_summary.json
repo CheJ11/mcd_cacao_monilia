@@ -1,0 +1,48 @@
+{
+  "umbral_agrupamiento_hamming": 12,
+  "imagenes_totales": 1950,
+  "imagenes_excluidas": {
+    "categoria_coco_distinta_a_carpeta": 210,
+    "misma_foto_en_varias_carpetas": 74
+  },
+  "imagenes_usadas": 1666,
+  "imagenes_usadas_por_clase": {
+    "h0": 573,
+    "m1": 343,
+    "m2": 332,
+    "m3": 418
+  },
+  "grupos": 1586,
+  "grupos_con_2+_imagenes": 75,
+  "imagenes_en_grupos_2+": 155,
+  "conteo_por_particion_y_clase": {
+    "train": {
+      "h0": 410,
+      "m1": 245,
+      "m2": 237,
+      "m3": 298
+    },
+    "val": {
+      "h0": 82,
+      "m1": 49,
+      "m2": 47,
+      "m3": 60
+    },
+    "test": {
+      "h0": 81,
+      "m1": 49,
+      "m2": 48,
+      "m3": 60
+    }
+  },
+  "proporcion_por_particion": {
+    "train": 0.714,
+    "val": 0.143,
+    "test": 0.143
+  },
+  "verificacion": {
+    "pares_casi_duplicados_entre_particiones_propias": 0,
+    "pares_casi_duplicados_entre_particiones_oficiales": 33,
+    "misma_foto_en_dos_carpetas_y_en_dos_particiones_oficiales": 11
+  }
+}
