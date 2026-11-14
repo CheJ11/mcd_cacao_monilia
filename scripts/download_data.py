@@ -1,5 +1,8 @@
 """Descarga, verifica (MD5) y descomprime CocoaMoniliaDataSet desde Zenodo.
 
+Descarga todos los archivos del registro (el .zip y las particiones oficiales
+train.txt / val.txt / test.txt); solo descomprime los .zip.
+
 Uso (desde la raíz del repositorio):
     python -m scripts.download_data            # descarga y descomprime
     python -m scripts.download_data --list     # solo lista los archivos del registro
@@ -104,8 +107,7 @@ def main() -> int:
             print(f"  - {f['key']}  ({mb:,.1f} MB)  md5={f['md5']}")
         if args.list:
             return 0
-        files = [f for f in files if f["key"].lower().endswith(".zip")]
-        if not files:
+        if not any(f["key"].lower().endswith(".zip") for f in files):
             print("ERROR: el registro no contiene archivos .zip; revisen la lista anterior.")
             return 1
 
@@ -121,8 +123,16 @@ def main() -> int:
                     print(f"ERROR: MD5 no coincide para {dest.name} ({got} != {f['md5']})")
                     return 1
                 print(f"MD5 verificado: {dest.name}")
+        if dest.suffix.lower() != ".zip":
+            continue  # p. ej. train.txt / val.txt / test.txt: particiones oficiales
+        # Marcador: evita volver a descomprimir varios GB si el zip no cambió
+        marker = config.RAW_DIR / f".extracted_{f['md5'] or dest.stem}"
+        if marker.exists():
+            print(f"OK (ya descomprimido): {dest.name}")
+            continue
         print(f"Descomprimiendo {dest.name} ...")
         safe_extract(dest, config.RAW_DIR)
+        marker.touch()
 
     counts = count_images(config.RAW_DIR)
     total = sum(counts.values())
