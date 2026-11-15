@@ -4,6 +4,7 @@ Ejecución local (desde la raíz del repositorio):
     streamlit run streamlit_app.py
 """
 import json
+import time
 
 import numpy as np
 import pandas as pd
@@ -12,7 +13,7 @@ import streamlit as st
 from cacao import config
 from cacao.data import load_square_image
 
-AUTORES = "José Durán"
+AUTORES = "Completar con los nombres de los autores"
 REPO_URL = "https://github.com/CheJ11/mcd_cacao_monilia"
 TH = config.CONFIDENCE_THRESHOLD
 
@@ -64,12 +65,67 @@ def pct(x: float) -> str:
     return f"{x:.0%}"
 
 
+# ------------------------------------------------------- utilidades de navegador (JS)
+def run_js(code: str) -> None:
+    """Ejecuta JavaScript en el navegador del usuario. El sello de tiempo hace que el
+    elemento sea distinto en cada ejecución, de modo que el script vuelva a correr."""
+    st.html(f"<script>/* {time.time_ns()} */ {code}</script>", unsafe_allow_javascript=True)
+
+
+def anchor(anchor_id: str) -> None:
+    """Marca invisible a la que se puede desplazar la página."""
+    st.html(f'<div id="{anchor_id}"></div>')
+
+
+def scroll_to(anchor_id: str) -> None:
+    """Desplaza la página hasta la marca. Reintenta mientras la marca no exista y vuelve
+    a verificar después: el resto del contenido puede seguir dibujándose y moverla."""
+    run_js(f"""
+      (function () {{
+        let tries = 0, checks = 0;
+        const go = () => {{
+          const el = document.getElementById("{anchor_id}");
+          if (!el) {{ if (tries++ < 50) setTimeout(go, 100); return; }}
+          el.scrollIntoView({{behavior: "smooth", block: "start"}});
+          if (checks++ < 6) setTimeout(() => {{
+            if (Math.abs(el.getBoundingClientRect().top) > 40) go();
+          }}, 700);
+        }};
+        setTimeout(go, 150);
+      }})();""")
+
+
+def theme_button() -> None:
+    """Alterna modo claro/oscuro. Escribe la misma preferencia que guarda el menú
+    Settings de Streamlit (localStorage, formato verificado en Streamlit 1.67) y recarga.
+    El tema actual se lee del color de fondo real de la página."""
+    if st.button("🌓 Claro / oscuro", key="tema", width="stretch",
+                 help="Cambia entre modo claro y oscuro (recarga la página)"):
+        run_js("""
+          const app = document.querySelector('[data-testid="stApp"]');
+          const rgb = getComputedStyle(app).backgroundColor.match(/[0-9]+/g).map(Number);
+          const isDark = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) < 128;
+          const key = `stActiveTheme-${window.location.pathname}-v2`;
+          window.localStorage.setItem(key, JSON.stringify(isDark ? "Light" : "Dark"));
+          window.location.reload();""")
+
+
+def pick_example(i: int) -> None:
+    st.session_state["galeria"] = i
+    st.session_state["scroll"] = "resultado"
+
+
+def back_to_gallery() -> None:
+    st.session_state["scroll"] = "galeria"
+
+
 # --------------------------------------------------------------------- diagnóstico
 def analyze(img, real_cls: str | None = None) -> None:
     """Muestra predicción, probabilidades, orientación y Grad-CAM para una imagen 512x512."""
     model = load_model()
     x = np.asarray(img, dtype=np.float32)[None]
-    probs = model(x, training=False).numpy()[0]
+    with st.spinner("Analizando la imagen…"):
+        probs = model(x, training=False).numpy()[0]
     k = int(probs.argmax())
     cls, conf, p_inf = config.CLASSES[k], float(probs[k]), float(1 - probs[0])
 
@@ -78,7 +134,8 @@ def analyze(img, real_cls: str | None = None) -> None:
         show_cam = st.toggle("Mostrar dónde miró el modelo (Grad-CAM)", value=False)
         if show_cam:
             from cacao.explain import grad_cam, overlay
-            cam, _ = grad_cam(model, x)
+            with st.spinner("Calculando el mapa de atención…"):
+                cam, _ = grad_cam(model, x)
             st.image(overlay(np.asarray(img), cam[0]), width="stretch",
                      caption="Rojo: regiones que más influyeron en la predicción")
         else:
@@ -120,9 +177,14 @@ def analyze(img, real_cls: str | None = None) -> None:
 
 
 def tab_diagnostico() -> None:
-    st.markdown("Fotografíe **una mazorca de cacao**, de cerca y con buena luz. "
-                "El modelo solo conoce mazorcas de cacao: con otro tipo de imagen igual "
-                "responderá con alguno de los 4 estadios, pero esa respuesta no tiene sentido.")
+    with st.expander("¿Cómo usar la app?", icon="ℹ️"):
+        st.markdown(
+            "1. Elija una imagen: un ejemplo de la galería, una foto propia o la cámara.\n"
+            "2. Para fotos propias: **una sola mazorca de cacao**, de cerca y con buena luz.\n"
+            "3. Lea el estadio, la confianza y la probabilidad de infección. Active Grad-CAM "
+            "para ver en qué zona se fijó el modelo.\n\n"
+            "El modelo solo conoce mazorcas de cacao: con otro tipo de imagen igual responderá "
+            "con alguno de los 4 estadios, pero esa respuesta no tiene sentido.")
     source = st.radio("Origen de la imagen",
                       ["Galería de ejemplos", "Subir una foto", "Tomar una foto"],
                       horizontal=True)
@@ -132,25 +194,36 @@ def tab_diagnostico() -> None:
         if not gallery:
             st.info("Galería no disponible. Ejecuten: python -m scripts.make_gallery")
             return
+        anchor("galeria")
         st.caption("Imágenes del conjunto de **test**: el modelo nunca las vio al entrenar. "
                    "¿Puede adivinar el estadio antes de analizarla?")
+        sel = st.session_state.get("galeria")
         cols = st.columns(4)
         for i, item in enumerate(gallery):
             with cols[i % 4]:
                 st.image(str(config.GALLERY_DIR / item["archivo"]), width="stretch")
-                if st.button(f"Analizar ejemplo {i + 1}", key=f"g{i}", width="stretch"):
-                    st.session_state["galeria"] = i
-        sel = st.session_state.get("galeria")
+                st.button(f"Analizar ejemplo {i + 1}", key=f"g{i}", width="stretch",
+                          type="primary" if i == sel else "secondary",
+                          on_click=pick_example, args=(i,))
         if sel is not None:
             st.divider()
+            anchor("resultado")
             st.subheader(f"Ejemplo {sel + 1}")
             item = gallery[sel]
             analyze(load_square_image(config.GALLERY_DIR / item["archivo"],
                                       config.PREPROCESS_SIZE), real_cls=item["clase_real"])
+            st.button("↑ Elegir otro ejemplo", key="volver", on_click=back_to_gallery)
+        target = st.session_state.pop("scroll", None)
+        if target:
+            scroll_to(target)
         return
 
-    file = (st.file_uploader("Imagen JPG o PNG", type=["jpg", "jpeg", "png"])
-            if source == "Subir una foto" else st.camera_input("Cámara"))
+    if source == "Subir una foto":
+        file = st.file_uploader("Imagen JPG o PNG", type=["jpg", "jpeg", "png"])
+        st.caption("En el celular, este botón también permite tomar la foto con la cámara "
+                   "trasera, que suele dar mejor resultado que la cámara frontal.")
+    else:
+        file = st.camera_input("Cámara")
     if file is None:
         return
     try:
@@ -167,10 +240,13 @@ def tab_como_funciona() -> None:
     st.subheader("Flujo de la solución")
     st.graphviz_chart("""
     digraph {
-      rankdir=LR; node [shape=box, style="rounded,filled", fillcolor="#f2efe8", fontsize=11];
+      rankdir=TB; bgcolor="transparent"; nodesep=0.4;
+      node [shape=box, style="rounded,filled", fillcolor="#e8d9c5", fontcolor="#2b1d14", fontsize=11];
+      edge [color="#8a8a8a"];
       a [label="Foto de la\\nmazorca"]; b [label="Corrección de\\norientación (EXIF)"];
       c [label="Recorte cuadrado\\ny 512 px"]; d [label="Redimensionado\\na 224 px"];
       e [label="MobileNetV2\\n(ImageNet + fine-tuning)"]; f [label="Probabilidad de\\n4 estadios"];
+      {rank=same; a; b; c;} {rank=same; d; e; f;}   // dos filas: legible también en celular
       a -> b -> c -> d -> e -> f;
     }""", width="stretch")
     st.markdown(
@@ -283,8 +359,12 @@ def tab_acerca() -> None:
 
 
 # ----------------------------------------------------------------------- principal
-st.title("🍫 Detección de moniliasis en mazorcas de cacao")
-st.caption("Clasificación del estadio de *Moniliophthora roreri* a partir de una foto")
+col_title, col_theme = st.columns([5, 1], vertical_alignment="center")
+with col_title:
+    st.title("🍫 Detección de moniliasis en mazorcas de cacao")
+    st.caption("Clasificación del estadio de *Moniliophthora roreri* a partir de una foto")
+with col_theme:
+    theme_button()
 t1, t2, t3, t4 = st.tabs(["Diagnóstico", "Cómo funciona", "Desempeño", "Acerca de"])
 with t1:
     tab_diagnostico()
