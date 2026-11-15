@@ -1,0 +1,98 @@
+[
+  {
+    "archivo": "ejemplo_01.jpg",
+    "clase_real": "m1",
+    "origen": "cocoapods_images\\m1\\IMG_20240226_143505082_HDR.jpg",
+    "error_en_evaluacion": true
+  },
+  {
+    "archivo": "ejemplo_02.jpg",
+    "clase_real": "m3",
+    "origen": "cocoapods_images\\m3\\IMG_20240227_093136491_HDR.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_03.jpg",
+    "clase_real": "m1",
+    "origen": "cocoapods_images\\m1\\20241011_110810.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_04.jpg",
+    "clase_real": "m2",
+    "origen": "cocoapods_images\\m2\\IMG_20240229_011110_588.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_05.jpg",
+    "clase_real": "h0",
+    "origen": "cocoapods_images\\h0\\IMG_20240802_131123.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_06.jpg",
+    "clase_real": "h0",
+    "origen": "cocoapods_images\\h0\\IMG_20240226_153420950_HDR.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_07.jpg",
+    "clase_real": "m2",
+    "origen": "cocoapods_images\\m2\\IMG_20240226_142302199.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_08.jpg",
+    "clase_real": "m1",
+    "origen": "cocoapods_images\\m1\\20241011_135842.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_09.jpg",
+    "clase_real": "h0",
+    "origen": "cocoapods_images\\h0\\IMG_20241010_144348808_HDR.jpg",
+    "error_en_evaluacion": true
+  },
+  {
+    "archivo": "ejemplo_10.jpg",
+    "clase_real": "h0",
+    "origen": "cocoapods_images\\h0\\IMG_20240928_101043.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_11.jpg",
+    "clase_real": "m3",
+    "origen": "cocoapods_images\\m3\\IMG_20240229_005157_969.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_12.jpg",
+    "clase_real": "m2",
+    "origen": "cocoapods_images\\m2\\IMG_20240227_090105279.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_13.jpg",
+    "clase_real": "m3",
+    "origen": "cocoapods_images\\m3\\IMG_20240227_104447349_HDR.jpg",
+    "error_en_evaluacion": false
+  },
+  {
+    "archivo": "ejemplo_14.jpg",
+    "clase_real": "m2",
+    "origen": "cocoapods_images\\m2\\IMG_20240229_005651_853.jpg",
+    "error_en_evaluacion": true
+  },
+  {
+    "archivo": "ejemplo_15.jpg",
+    "clase_real": "m3",
+    "origen": "cocoapods_images\\m3\\IMG_20241010_113449364_HDR.jpg",
+    "error_en_evaluacion": true
+  },
+  {
+    "archivo": "ejemplo_16.jpg",
+    "clase_real": "m1",
+    "origen": "cocoapods_images\\m1\\IMG_20240802_131139.jpg",
+    "error_en_evaluacion": false
+  }
+]

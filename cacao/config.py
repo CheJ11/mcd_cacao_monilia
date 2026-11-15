@@ -40,4 +40,11 @@ SEED = 42
 IMG_SIZE = (224, 224)
 PREPROCESS_SIZE = 512   # caché en data/processed/512/: permite entrenar a 224 o 384
 JPEG_QUALITY = 95
+
+# --- App ---
+# Umbral fijado con VALIDACIÓN (eval_mobilenetv2_val.json): a 0,7 el modelo responde
+# al 79 % de las fotos y acierta el 89,9 % de ellas
+CONFIDENCE_THRESHOLD = 0.7
+APP_MODEL = "mobilenetv2"
+GALLERY_DIR = ROOT / "app_assets" / "gallery"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp"}
