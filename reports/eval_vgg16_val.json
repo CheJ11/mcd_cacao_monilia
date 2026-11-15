@@ -1,0 +1,120 @@
+{
+  "modelo": "vgg16",
+  "particion": "val",
+  "n": 238,
+  "accuracy": 0.8403,
+  "accuracy_ic95": [
+    0.7941,
+    0.8866
+  ],
+  "f1_macro": 0.838,
+  "f1_macro_ic95": [
+    0.7873,
+    0.8843
+  ],
+  "balanced_accuracy": 0.8454,
+  "por_clase": {
+    "h0": {
+      "precision": 0.8919,
+      "recall": 0.8049,
+      "f1-score": 0.8462,
+      "support": 82.0
+    },
+    "m1": {
+      "precision": 0.7143,
+      "recall": 0.8163,
+      "f1-score": 0.7619,
+      "support": 49.0
+    },
+    "m2": {
+      "precision": 0.7778,
+      "recall": 0.8936,
+      "f1-score": 0.8317,
+      "support": 47.0
+    },
+    "m3": {
+      "precision": 0.963,
+      "recall": 0.8667,
+      "f1-score": 0.9123,
+      "support": 60.0
+    }
+  },
+  "matriz_confusion": [
+    [
+      66,
+      13,
+      3,
+      0
+    ],
+    [
+      8,
+      40,
+      1,
+      0
+    ],
+    [
+      0,
+      3,
+      42,
+      2
+    ],
+    [
+      0,
+      0,
+      8,
+      52
+    ]
+  ],
+  "confusiones_mas_frecuentes": [
+    {
+      "real": "h0",
+      "pred": "m1",
+      "n": 13
+    },
+    {
+      "real": "m1",
+      "pred": "h0",
+      "n": 8
+    },
+    {
+      "real": "m3",
+      "pred": "m2",
+      "n": 8
+    },
+    {
+      "real": "h0",
+      "pred": "m2",
+      "n": 3
+    },
+    {
+      "real": "m2",
+      "pred": "m1",
+      "n": 3
+    }
+  ],
+  "analisis_confianza": {
+    "0.5": {
+      "cobertura": 0.966,
+      "exactitud": 0.857
+    },
+    "0.6": {
+      "cobertura": 0.903,
+      "exactitud": 0.884
+    },
+    "0.7": {
+      "cobertura": 0.84,
+      "exactitud": 0.905
+    },
+    "0.8": {
+      "cobertura": 0.702,
+      "exactitud": 0.934
+    },
+    "0.9": {
+      "cobertura": 0.538,
+      "exactitud": 0.953
+    }
+  },
+  "ms_por_imagen_cpu": 33.88,
+  "tamano_modelo_mb": 59.0,
+  "parametros": 14716740
+}
