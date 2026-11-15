@@ -8,4 +8,6 @@ runs/
 .env
 .streamlit/secrets.toml
 models/_tmp/
+models/*.keras
+!models/mobilenetv2.keras
 .vscode/

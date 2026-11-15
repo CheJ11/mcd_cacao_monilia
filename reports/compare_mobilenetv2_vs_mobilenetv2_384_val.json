@@ -1,0 +1,11 @@
+{
+  "particion": "val",
+  "diferencia_f1_macro": "mobilenetv2 - mobilenetv2_384",
+  "valor": 0.0039,
+  "ic95_bootstrap_pareado": [
+    -0.0448,
+    0.054
+  ],
+  "desacuerdos_entre_modelos": 38,
+  "interpretacion": "el IC incluye 0: diferencia no concluyente con este n"
+}

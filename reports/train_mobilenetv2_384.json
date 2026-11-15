@@ -1,0 +1,28 @@
+{
+  "modelo": "mobilenetv2_384",
+  "backbone": "mobilenetv2",
+  "img_size": 384,
+  "batch": 32,
+  "lr_cabeza": 0.001,
+  "lr_fine_tuning": 1e-05,
+  "capas_descongeladas": 30,
+  "parametros_entrenables_fine_tuning": 1510720,
+  "parametros_totales": 2263108,
+  "epocas_fase1": 20,
+  "epocas_fase2": 15,
+  "segundos_fase1": 578.2,
+  "segundos_fase2": 475.0,
+  "fine_tuning_mejoro_val_loss": true,
+  "pesos_por_clase": {
+    "h0": 0.726,
+    "m1": 1.214,
+    "m2": 1.255,
+    "m3": 0.998
+  },
+  "val_loss_min": 0.3687,
+  "val_accuracy": 0.8361,
+  "val_f1_macro": 0.8284,
+  "tamano_modelo_mb": 9.7,
+  "limit": null,
+  "weights": "imagenet"
+}

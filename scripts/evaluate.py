@@ -6,6 +6,7 @@ Protocolo (evita sesgo de selección):
 
 Uso (desde la raíz del repositorio):
     python -m scripts.evaluate --models mobilenetv2 vgg16          # validación (por defecto)
+    python -m scripts.evaluate --models mobilenetv2 mobilenetv2_384  # experimentos con --tag
     python -m scripts.evaluate --models mobilenetv2 --split test   # test del modelo elegido
 
 Salidas por modelo y partición:
@@ -13,7 +14,7 @@ Salidas por modelo y partición:
     reports/predictions_<modelo>_<split>.csv       una fila por imagen con probabilidades
     reports/figures/eval_<modelo>_<split>_confusion.png
     reports/figures/eval_<modelo>_<split>_gradcam.png
-Con dos modelos: reports/compare_<split>.json (diferencia pareada con IC 95 %).
+Con dos modelos: reports/compare_<a>_vs_<b>_<split>.json (diferencia pareada con IC 95 %).
 """
 import argparse
 import json
@@ -165,7 +166,8 @@ def evaluate(name: str, split: str, rng) -> tuple[dict, np.ndarray, np.ndarray]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--models", nargs="+", required=True, choices=list(cacao.model.BACKBONES))
+    ap.add_argument("--models", nargs="+", required=True,
+                    help="nombres de archivo en models/ sin .keras (p. ej. mobilenetv2 mobilenetv2_384)")
     ap.add_argument("--split", choices=["val", "test"], default="val")
     args = ap.parse_args()
     if args.split == "test" and len(args.models) > 1:
@@ -204,7 +206,7 @@ def main() -> int:
         comp["interpretacion"] = ("el IC incluye 0: diferencia no concluyente con este n"
                                   if comp["ic95_bootstrap_pareado"][0] <= 0 <= comp["ic95_bootstrap_pareado"][1]
                                   else "el IC excluye 0: diferencia consistente")
-        (config.REPORTS_DIR / f"compare_{args.split}.json").write_text(
+        (config.REPORTS_DIR / f"compare_{a}_vs_{b}_{args.split}.json").write_text(
             json.dumps(comp, indent=2, ensure_ascii=False), encoding="utf-8")
         print("\n=== Comparación pareada ===")
         print(json.dumps(comp, indent=2, ensure_ascii=False))

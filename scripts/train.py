@@ -6,6 +6,7 @@ Uso (desde la raíz del repositorio):
     python -m scripts.train --model mobilenetv2
     python -m scripts.train --model vgg16
     python -m scripts.train --model mobilenetv2 --limit 64 --epochs-head 1 --epochs-ft 1   # prueba rápida
+    python -m scripts.train --model mobilenetv2 --img-size 384 --tag 384   # experimento: guarda mobilenetv2_384
 
 Fases:
   1. Backbone congelado: solo se entrena el clasificador (lr alto).
@@ -14,10 +15,11 @@ Fases:
   El conjunto de TEST no se usa aquí (se evalúa una sola vez en evaluate.py).
 
 Salidas:
-    models/<modelo>.keras                       modelo final sin estado del optimizador
-    reports/history_<modelo>.csv                pérdida y exactitud por época y fase
-    reports/train_<modelo>.json                 configuración, tiempos y métricas de validación
-    reports/figures/train_<modelo>_curves.png   curvas de aprendizaje
+    (<nombre> = <modelo> o <modelo>_<tag> si se usa --tag)
+    models/<nombre>.keras                       modelo final sin estado del optimizador
+    reports/history_<nombre>.csv                pérdida y exactitud por época y fase
+    reports/train_<nombre>.json                 configuración, tiempos y métricas de validación
+    reports/figures/train_<nombre>_curves.png   curvas de aprendizaje
 """
 import argparse
 import json
@@ -103,6 +105,8 @@ def main() -> int:
     ap.add_argument("--patience", type=int, default=4)
     ap.add_argument("--fine-tune-layers", type=int, default=None)
     ap.add_argument("--weights", choices=["imagenet", "none"], default="imagenet")
+    ap.add_argument("--tag", default=None,
+                    help="sufijo para no sobrescribir otros experimentos (p. ej. 384)")
     ap.add_argument("--limit", type=int, default=None,
                     help="usar solo ~N imágenes por partición (prueba rápida)")
     args = ap.parse_args()
@@ -111,7 +115,8 @@ def main() -> int:
         print("ERROR: faltan las imágenes preprocesadas. Ejecuten: python -m scripts.preprocess")
         return 1
     keras.utils.set_random_seed(config.SEED)
-    name = args.model
+    name = args.model                                       # backbone
+    out_name = f"{name}_{args.tag}" if args.tag else name    # nombre de los archivos
     tmp = config.MODELS_DIR / "_tmp"
     tmp.mkdir(parents=True, exist_ok=True)
     config.FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -127,7 +132,7 @@ def main() -> int:
     model, base = build_model(name, args.img_size, weights=weights)
 
     # Fase 1: backbone congelado ----------------------------------------------------
-    ckpt1 = tmp / f"{name}_fase1.weights.h5"
+    ckpt1 = tmp / f"{out_name}_fase1.weights.h5"
     h1, t1 = fit_phase(model, train_ds, val_ds, args.epochs_head, args.lr_head,
                        class_weight, ckpt1, args.patience)
     model.load_weights(ckpt1)
@@ -136,7 +141,7 @@ def main() -> int:
     # Fase 2: fine-tuning ------------------------------------------------------------
     n_ft = args.fine_tune_layers or BACKBONES[name]["fine_tune_layers"]
     n_params_ft = unfreeze_top(base, n_ft)
-    ckpt2 = tmp / f"{name}_fase2.weights.h5"
+    ckpt2 = tmp / f"{out_name}_fase2.weights.h5"
     ckpt2.unlink(missing_ok=True)
     h2, t2 = fit_phase(model, train_ds, val_ds, args.epochs_ft, args.lr_ft,
                        class_weight, ckpt2, args.patience, threshold=best1)
@@ -146,7 +151,7 @@ def main() -> int:
     # Modelo final: misma arquitectura, sin optimizador (archivo más liviano) --------
     final, _ = build_model(name, args.img_size, weights=None)
     final.load_weights(best_ckpt)
-    out_path = config.MODELS_DIR / f"{name}.keras"
+    out_path = config.MODELS_DIR / f"{out_name}.keras"
     final.save(out_path)
 
     # Verificación: el archivo guardado reproduce las predicciones ------------------
@@ -159,11 +164,11 @@ def main() -> int:
     hist = pd.concat([h1.assign(fase="cabeza"), h2.assign(fase="fine_tuning")],
                      ignore_index=True)
     hist.insert(0, "epoca", np.arange(1, len(hist) + 1))
-    hist.to_csv(config.REPORTS_DIR / f"history_{name}.csv", index=False)
-    plot_curves(hist, name, config.FIGURES_DIR / f"train_{name}_curves.png")
+    hist.to_csv(config.REPORTS_DIR / f"history_{out_name}.csv", index=False)
+    plot_curves(hist, out_name, config.FIGURES_DIR / f"train_{out_name}_curves.png")
 
     summary = {
-        "modelo": name, "img_size": args.img_size, "batch": args.batch,
+        "modelo": out_name, "backbone": name, "img_size": args.img_size, "batch": args.batch,
         "lr_cabeza": args.lr_head, "lr_fine_tuning": args.lr_ft,
         "capas_descongeladas": n_ft, "parametros_entrenables_fine_tuning": n_params_ft,
         "parametros_totales": int(final.count_params()),
@@ -177,7 +182,7 @@ def main() -> int:
         "tamano_modelo_mb": round(out_path.stat().st_size / 1e6, 1),
         "limit": args.limit, "weights": args.weights,
     }
-    (config.REPORTS_DIR / f"train_{name}.json").write_text(
+    (config.REPORTS_DIR / f"train_{out_name}.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     return 0

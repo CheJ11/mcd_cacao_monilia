@@ -114,7 +114,7 @@
       "exactitud": 0.962
     }
   },
-  "ms_por_imagen_cpu": 9.31,
+  "ms_por_imagen_cpu": 8.86,
   "tamano_modelo_mb": 9.7,
   "parametros": 2263108
 }
