@@ -13,7 +13,7 @@ import streamlit as st
 from cacao import config
 from cacao.data import load_square_image
 
-AUTORES = "Completar con los nombres de los autores"
+AUTORES = "José Durán"
 REPO_URL = "https://github.com/CheJ11/mcd_cacao_monilia"
 TH = config.CONFIDENCE_THRESHOLD
 
